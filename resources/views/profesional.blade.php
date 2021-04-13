@@ -1,4 +1,4 @@
-@extends('plantilla')
+@extends('principal')
 @section('contenido')
     <template v-if="menu == 0">
         Soy el home

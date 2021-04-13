@@ -27,14 +27,13 @@ class ProfesionalsController extends Controller
     public function store(Request $request)
     {
         $profesional = new Profesionals;
-        /*$profesional->documento = $request->documento;
+        $profesional->documento = $request->documento;
         $profesional->nombre = $request->nombre;
         $profesional->apellido = $request->apellido;
         $profesional->habilidades = $request->habilidades;
         $profesional->salario = $request->salario;
         $profesional->disponible = 1;
-        $profesional->save(); //Guardamos en la base de datos*/
-        $profesional->create($request->all());
+        $profesional->save(); //Guardamos en la base de datos
     }
 
     /**

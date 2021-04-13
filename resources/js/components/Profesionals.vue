@@ -100,7 +100,7 @@
         </div>
         <!-- /.card -->
 
-        <!--Inicio del modal agregar/actualizar
+        <!--Inicio del modal agregar/actualizar-->
         <div
             :class="{'mostrar' : modal}"
             class="modal fade"
@@ -216,9 +216,9 @@
                         </button>
                     </div>
                 </div>
-                <!- /.modal-content ->
+                <!-- /.modal-content -->
             </div>
-            <!- /.modal-dialog ->
+            <!-- /.modal-dialog -->
         </div>-->
         <!--Fin del modal-->
     </main>
@@ -276,8 +276,7 @@ export default {
                     }
                 }
             }
-        }
-    },
+        },
 
     CerrarModal(){
         this.modal = 0,
@@ -312,7 +311,7 @@ export default {
             // always executed
         });
     },
-
+},
     mounted() {
         //console.log("Construyendo el Componente");
         this.ListarProfesionals();
