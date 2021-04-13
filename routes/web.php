@@ -23,3 +23,6 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/profesionals', [ProfesionalsController::class, 'index']); //Ruta para listar la informacion de los profesionales
 Route::post('/profesionals/registrar', [ProfesionalsController::class, 'store']); //Ruta para insertar en la bd profesionales
+Route::put('/profesionals/actualizar',[ProfesionalsController::class, 'update']); //Actualizar contratista
+Route::put('/profesionals/activar',[ProfesionalsController::class, 'activar']); //Actualizar contratista
+Route::put('/profesionals/desactivar',[ProfesionalsController::class, 'desactivar']); //Actualizar contratista

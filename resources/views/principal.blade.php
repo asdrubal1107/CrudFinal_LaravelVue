@@ -32,7 +32,8 @@
     <link href="assets/css/lib/simdahs.css" rel="stylesheet">
     <link href="assets/css/style.css" rel="stylesheet">
 
-
+	<!--DataTable css-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.24/datatables.min.css"/>
 </head>
 
 <body>
@@ -102,7 +103,8 @@
     <script src="assets/js/lib/owl-carousel/owl.carousel-init.js"></script>
     <script src="assets/js/scripts.js"></script><!-- scripit init-->
 
-    
+    <!--Datatable scripts-->
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.24/datatables.min.js"></script>
 </body>
 
 </html>

@@ -2106,12 +2106,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       modal: 0,
       tituloModal: '',
       tipoAccion: 0,
+      id: 0,
       documento: '',
       nombre: '',
       apellido: '',
@@ -2122,14 +2133,24 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     ListarProfesionals: function ListarProfesionals() {
+      var _this = this;
+
       var me = this;
       axios.get('/profesionals').then(function (response) {
         me.arrayProfesionals = response.data;
-        console.log(response);
+
+        _this.tabla(); //Cargar datatable
+        //sconsole.log(response);
+
       })["catch"](function (error) {
         // handle error
         console.log(error);
       }).then(function () {// always executed
+      });
+    },
+    tabla: function tabla() {
+      this.$nextTick(function () {
+        $('#tabla').DataTable();
       });
     },
     AbrirModal: function AbrirModal(modelo, accion, data) {
@@ -2142,12 +2163,19 @@ __webpack_require__.r(__webpack_exports__);
                   this.modal = 1, this.tituloModal = 'Registrar profesional', this.tipoAccion = 1, this.documento = '', this.nombre = '', this.apellido = '', this.habilidades = '', this.salario = '';
                   break;
                 }
+
+              case "Actualizar":
+                {
+                  this.modal = 1, this.tituloModal = 'Actualizar profesional', this.tipoAccion = 2, this.id = data['id'], this.documento = data['documento'], this.nombre = data['nombre'], this.apellido = data['apellido'], this.habilidades = data['habilidades'], this.salario = data['salario'];
+                  break;
+                }
             }
           }
       }
     },
     CerrarModal: function CerrarModal() {
-      this.modal = 0, this.tituloModal = '', this.tipoAccion = 0, this.documento = '', this.nombre = '', this.apellido = '', this.habilidades = '', this.salario = '';
+      this.modal = 0, this.tituloModal = '', this.tipoAccion = 0, this.id = 0;
+      this.documento = '', this.nombre = '', this.apellido = '', this.habilidades = '', this.salario = '';
     },
     RegistrarProfesionals: function RegistrarProfesionals() {
       var me = this;
@@ -2161,6 +2189,50 @@ __webpack_require__.r(__webpack_exports__);
         me.CerrarModal();
         me.ListarProfesionals();
         console.log(response);
+      })["catch"](function (error) {
+        // handle error
+        console.log(error);
+      }).then(function () {// always executed
+      });
+    },
+    ActualizarProfesionals: function ActualizarProfesionals() {
+      var me = this;
+      axios.put('/profesionals/actualizar', {
+        'id': this.id,
+        'documento': this.documento,
+        'nombre': this.nombre,
+        'apellido': this.apellido,
+        'habilidades': this.habilidades,
+        'salario': this.salario
+      }).then(function (response) {
+        me.CerrarModal();
+        me.ListarProfesionals();
+        console.log(response);
+      })["catch"](function (error) {
+        console.log(error);
+      }).then(function () {// always executed
+      });
+    },
+    ActivarProfesionals: function ActivarProfesionals(Id) {
+      var me = this;
+      axios.put('/profesionals/activar', {
+        'id': Id
+      }).then(function (response) {
+        me.CerrarModal();
+        me.ListarProfesionals(); //console.log(response);
+      })["catch"](function (error) {
+        // handle error
+        console.log(error);
+      }).then(function () {// always executed
+      });
+    },
+    DesactivarProfesionals: function DesactivarProfesionals(id) {
+      var me = this;
+      axios.put('/profesionals/desactivar', {
+        'id': id
+      }).then(function (response) {
+        me.CerrarModal();
+        me.ListarProfesionals(); //console.log(response);
       })["catch"](function (error) {
         // handle error
         console.log(error);
@@ -37991,7 +38063,72 @@ var render = function() {
                         ])
                   ]),
                   _vm._v(" "),
-                  _vm._m(2, true)
+                  _c("td", { staticClass: "project-actions text-right" }, [
+                    _c(
+                      "a",
+                      {
+                        staticClass: "btn btn-info btn-sm",
+                        attrs: { href: "#" },
+                        on: {
+                          click: function($event) {
+                            return _vm.AbrirModal(
+                              "Profesionals",
+                              "Actualizar",
+                              datos
+                            )
+                          }
+                        }
+                      },
+                      [
+                        _c("i", { staticClass: "fas fa-pencil-alt" }),
+                        _vm._v(
+                          "\n                                Editar\n                            "
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    datos.disponible == 1
+                      ? _c(
+                          "a",
+                          {
+                            staticClass: "btn btn-danger btn-sm",
+                            attrs: { href: "#" },
+                            on: {
+                              click: function($event) {
+                                return _vm.DesactivarProfesionals(datos.id)
+                              }
+                            }
+                          },
+                          [
+                            _c("i", { staticClass: "fas fa-trash" }),
+                            _vm._v(
+                              "\n                                Desactivar\n                            "
+                            )
+                          ]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    datos.disponible == 0
+                      ? _c(
+                          "a",
+                          {
+                            staticClass: "btn btn-info btn-sm",
+                            attrs: { href: "#" },
+                            on: {
+                              click: function($event) {
+                                return _vm.ActivarProfesionals(datos.id)
+                              }
+                            }
+                          },
+                          [
+                            _c("i", { staticClass: "fas fa-check" }),
+                            _vm._v(
+                              "\n                                Activar\n                            "
+                            )
+                          ]
+                        )
+                      : _vm._e()
+                  ])
                 ])
               }),
               0
@@ -38071,31 +38208,62 @@ var render = function() {
                       ),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.documento,
-                              expression: "documento"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "number",
-                            placeholder: "Numero documento",
-                            step: "1"
-                          },
-                          domProps: { value: _vm.documento },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
+                        _vm.tipoAccion == 2
+                          ? _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.documento,
+                                  expression: "documento"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              attrs: {
+                                type: "number",
+                                placeholder: "Numero documento",
+                                step: "1",
+                                readonly: ""
+                              },
+                              domProps: { value: _vm.documento },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.documento = $event.target.value
+                                }
                               }
-                              _vm.documento = $event.target.value
-                            }
-                          }
-                        })
+                            })
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.tipoAccion == 1
+                          ? _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.documento,
+                                  expression: "documento"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              attrs: {
+                                type: "number",
+                                placeholder: "Numero documento",
+                                step: "1"
+                              },
+                              domProps: { value: _vm.documento },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.documento = $event.target.value
+                                }
+                              }
+                            })
+                          : _vm._e()
                       ])
                     ]),
                     _vm._v(" "),
@@ -38248,7 +38416,7 @@ var render = function() {
                       ])
                     ]),
                     _vm._v(" "),
-                    _vm._m(3)
+                    _vm._m(2)
                   ]
                 )
               ]),
@@ -38297,7 +38465,12 @@ var render = function() {
                       "button",
                       {
                         staticClass: "btn btn-primary",
-                        attrs: { type: "button" }
+                        attrs: { type: "button" },
+                        on: {
+                          click: function($event) {
+                            return _vm.ActualizarProfesionals()
+                          }
+                        }
                       },
                       [
                         _vm._v(
@@ -38395,33 +38568,6 @@ var staticRenderFns = [
         ]),
         _vm._v(" "),
         _c("th", { staticStyle: { width: "12%" } })
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", { staticClass: "project-actions text-right" }, [
-      _c("a", { staticClass: "btn btn-info btn-sm", attrs: { href: "#" } }, [
-        _c("i", { staticClass: "fas fa-pencil-alt" }),
-        _vm._v(
-          "\n                                Editar\n                            "
-        )
-      ]),
-      _vm._v(" "),
-      _c("a", { staticClass: "btn btn-danger btn-sm", attrs: { href: "#" } }, [
-        _c("i", { staticClass: "fas fa-trash" }),
-        _vm._v(
-          "\n                                Eliminar\n                            "
-        )
-      ]),
-      _vm._v(" "),
-      _c("a", { staticClass: "btn btn-info btn-sm", attrs: { href: "#" } }, [
-        _c("i", { staticClass: "fas fa-check" }),
-        _vm._v(
-          "\n                                Activar\n                            "
-        )
       ])
     ])
   },

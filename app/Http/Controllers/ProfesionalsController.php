@@ -37,47 +37,36 @@ class ProfesionalsController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $profesional = Profesionals::findOrFail($request->id);
+        $profesional->documento = $request->documento;
+        $profesional->nombre = $request->nombre;
+        $profesional->apellido = $request->apellido;
+        $profesional->habilidades = $request->habilidades;
+        $profesional->salario = $request->salario;
+        $profesional->disponible = 1;
+        $profesional->update(); //Guardamos en la base de datos
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function activar(Request $request)
     {
-        //
+        $profesional = Profesionals::findOrFail($request->id);
+        $profesional->disponible = 1;
+        $profesional->update(); //Guardamos en la base de datos
     }
+
+    public function desactivar(Request $request)
+    {
+        $profesional = Profesionals::findOrFail($request->id);
+        $profesional->disponible = 0;
+        $profesional->update(); //Guardamos en la base de datos
+    }
+
 }

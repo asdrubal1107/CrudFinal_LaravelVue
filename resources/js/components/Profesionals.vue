@@ -79,15 +79,15 @@
                               Ver
                           </a>
                           -->
-                                <a class="btn btn-info btn-sm" href="#">
+                                <a class="btn btn-info btn-sm" href="#" @click="AbrirModal('Profesionals','Actualizar',datos)">
                                     <i class="fas fa-pencil-alt"> </i>
                                     Editar
                                 </a>
-                                <a class="btn btn-danger btn-sm" href="#">
+                                <a class="btn btn-danger btn-sm" href="#" v-if="datos.disponible == 1" @click="DesactivarProfesionals(datos.id)">
                                     <i class="fas fa-trash"> </i>
-                                    Eliminar
+                                    Desactivar
                                 </a>
-                                <a class="btn btn-info btn-sm" href="#">
+                                <a class="btn btn-info btn-sm" href="#"  v-if="datos.disponible == 0" @click="ActivarProfesionals(datos.id)">
                                     <i class="fas fa-check"> </i>
                                     Activar
                                 </a>
@@ -133,11 +133,21 @@
                                 >
                                 <div class="col-md-9">
                                     <input
+                                        v-if="tipoAccion == 2"
                                         type="number"
                                         class="form-control"
                                         placeholder="Numero documento"
                                         step="1"
-                                        v-model="documento"
+                                        v-model="documento"      
+                                        readonly
+                                    />
+                                    <input
+                                        v-if="tipoAccion == 1"
+                                        type="number"
+                                        class="form-control"
+                                        placeholder="Numero documento"
+                                        step="1"
+                                        v-model="documento"                  
                                     />
                                 </div>
                             </div>
@@ -211,7 +221,7 @@
                         <button type="button" class="btn btn-primary" v-if="tipoAccion == 1" @click="RegistrarProfesionals()">
                             Guardar
                         </button>
-                        <button type="button" class="btn btn-primary" v-if="tipoAccion == 2">
+                        <button type="button" class="btn btn-primary" v-if="tipoAccion == 2" @click="ActualizarProfesionals()">
                             Actualizar
                         </button>
                     </div>
@@ -231,6 +241,7 @@ export default {
             modal : 0,
             tituloModal : '',
             tipoAccion : 0,
+            id : 0,
             documento : '',
             nombre : '',
             apellido : '',
@@ -244,10 +255,10 @@ export default {
         ListarProfesionals(){
             let me = this;
             
-            axios.get('/profesionals')
-            .then(function (response) {
+            axios.get('/profesionals').then(response => {
                 me.arrayProfesionals = response.data;
-                console.log(response);
+                this.tabla(); //Cargar datatable
+                //sconsole.log(response);
             })
             .catch(function (error) {
                 // handle error
@@ -256,6 +267,12 @@ export default {
             .then(function () {
                 // always executed
             });
+        },
+
+        tabla(){
+            this.$nextTick(() => {
+                $('#tabla').DataTable();
+            })
         },
 
         AbrirModal(modelo, accion, data){
@@ -273,6 +290,18 @@ export default {
                             this.salario = ''                 
                             break;
                         }
+                        case "Actualizar":{
+                            this.modal = 1,
+                            this.tituloModal = 'Actualizar profesional',
+                            this.tipoAccion = 2,
+                            this.id = data['id'],
+                            this.documento = data['documento'],
+                            this.nombre = data['nombre'],
+                            this.apellido = data['apellido'],
+                            this.habilidades = data['habilidades'],
+                            this.salario = data['salario']                 
+                            break;
+                        }
                     }
                 }
             }
@@ -282,6 +311,7 @@ export default {
         this.modal = 0,
         this.tituloModal = '',
         this.tipoAccion = 0,
+        this.id = 0;
         this.documento = '',
         this.nombre = '',
         this.apellido = '',
@@ -311,6 +341,68 @@ export default {
             // always executed
         });
     },
+
+    ActualizarProfesionals(){
+        let me = this;
+        axios.put('/profesionals/actualizar',{
+            'id' : this.id,
+            'documento' : this.documento,
+            'nombre' : this.nombre,
+            'apellido' : this.apellido,
+            'habilidades' : this.habilidades,
+            'salario' : this.salario
+        })
+        .then(function (response) {
+                me.CerrarModal();
+                me.ListarProfesionals();
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+            .then(function () {
+                // always executed
+            });
+    },
+
+    ActivarProfesionals(Id){
+        let me = this;
+        axios.put('/profesionals/activar',{
+            'id' : Id,
+        })
+        .then(function (response) {
+            me.CerrarModal();
+            me.ListarProfesionals();
+            //console.log(response);
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+        })
+        .then(function () {
+            // always executed
+        });
+    },
+
+    DesactivarProfesionals(id){
+        let me = this;
+        axios.put('/profesionals/desactivar',{
+            'id' : id,
+        })
+        .then(function (response) {
+            me.CerrarModal();
+            me.ListarProfesionals();
+            //console.log(response);
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+        })
+        .then(function () {
+            // always executed
+        });
+    },
+
 },
     mounted() {
         //console.log("Construyendo el Componente");
